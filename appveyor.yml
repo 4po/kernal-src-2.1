@@ -1,0 +1,56 @@
+# Sous licence de la Apache Software Foundation (ASF) sous un ou plusieurs
+# accords de licence de contributeur. Voir le fichier NOTICE distribué avec
+# ce travail pour des informations supplémentaires concernant la propriété des droits d'auteur.
+# L'ASF vous concède ce fichier sous licence Apache License, Version 2.0 (la "Licence").
+# (la " Licence ") ; vous ne pouvez utiliser ce fichier qu'en conformité avec la Licence.
+# la Licence. Vous pouvez obtenir une copie de la licence à l'adresse suivante
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Sauf si la loi applicable l'exige ou si un accord écrit a été conclu, les logiciels distribués sous la licence sont distribués " EN L'ÉTAT ".
+# distribué sous la Licence est distribué sur une base "AS IS",
+# SANS GARANTIES NI CONDITIONS D'AUCUNE SORTE, qu'elles soient expresses ou implicites.
+# Voir la Licence pour les termes spécifiques régissant les permissions et les limitations de la Licence.
+# les limitations de la Licence.
+
+version: "{build}-{branch}"
+
+shallow_clone: true
+
+platform: x64
+configuration: Debug
+
+branches:
+  only:
+    - master
+
+only_commits:
+  files:
+    - R/
+
+cache:
+  - C:\Users\appveyor\.m2
+
+install:
+  # Install maven and dependencies
+  - ps: .\dev\appveyor-install-dependencies.ps1
+  # Required package for R unit tests
+  - cmd: R -e "install.packages('testthat', repos='http://cran.us.r-project.org')"
+  - cmd: R -e "packageVersion('testthat')"
+  - cmd: R -e "install.packages('e1071', repos='http://cran.us.r-project.org')"
+  - cmd: R -e "packageVersion('e1071')"
+  - cmd: R -e "install.packages('survival', repos='http://cran.us.r-project.org')"
+  - cmd: R -e "packageVersion('survival')"
+
+build_script:
+  - cmd: mvn -DskipTests -Phadoop-2.6 -Psparkr -Phive -Phive-thriftserver package
+
+test_script:
+  - cmd: .\bin\spark-submit2.cmd --conf spark.hadoop.fs.default.name="file:///" R\pkg\tests\run-all.R
+
+notifications:
+  - provider: Email
+    on_build_success: false
+    on_build_failure: false
+    on_build_status_changed: false
+
