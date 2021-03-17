@@ -1,5 +1,5 @@
 # kernal-src-2.1
-Spark est un système de calcul en cluster rapide et général pour le Big Data. Développé par 4po.
+Spark est un système de calcul en cluster rapide et général pour le Big Data. Rewrite par 4po.
 
 # Apache Spark
 
