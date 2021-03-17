@@ -106,4 +106,3 @@ dans la documentation en ligne pour un aperçu de la façon de configurer Spark.
 Veuillez consulter le [Guide de contribution à Spark](http://spark.apache.org/contributing.html)
 pour des informations sur la façon de commencer à contribuer au projet.
 
-Traduit avec www.DeepL.com/Translator (version gratuite)
